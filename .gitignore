@@ -1,0 +1,10 @@
+# Mac OS files
+.DS_Store
+.tm_properties
+
+# Building Junk
+*.o
+*.hi
+
+# Binary file
+PuissanceHask
