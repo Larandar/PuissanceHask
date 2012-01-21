@@ -1,5 +1,5 @@
 module PH.Data ( 
-	Token(..), Table, Col,
+	Token(..), Table, Col, PileExec,
 	tableSize, newTable,
 	) where
 {- by Adrien Dudouit-Exposito -}
@@ -17,7 +17,7 @@ type Col   = [ Token ]
 
 type PileExec = [(Int, Token)]
 
-tableSize = 7
+tableSize = 8
 
 newTable :: Table
 newTable = newTable' tableSize

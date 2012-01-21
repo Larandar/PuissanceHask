@@ -1,4 +1,4 @@
-module PH.Game ( placeToken ) where
+module PH.Game ( placeToken, multiplePlace ) where
 {- by Adrien Dudouit-Exposito -}
 
 import Data.Maybe
@@ -11,6 +11,10 @@ import qualified PH.Rules as Rules
 placeToken :: Table -> Int -> Token -> Table
 placeToken table col token = setToken table col lig token
 	where lig = fromJust ( Rules.wherePlace table col )
+
+multiplePlace :: Table -> PileExec -> Table
+multiplePlace table []               = table
+multiplePlace table ((col,token):ls) = placeToken (multiplePlace table ls) col token
 
 
 -- Internal function
