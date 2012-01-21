@@ -20,8 +20,13 @@ isFullTable []             = True
 isFullTable ((UToken:_):_) = False
 isFullTable (_:cs)         = isFullTable cs
 
+isFreeCol :: Table -> Int -> Bool
+isFreeCol ((UToken:_):_) 1 = True
+isFreeCol _              1 = False
+isFreeCol (c:cs)         n = isFreeCol cs (n-1)
 
 -- Internal funtions
+-- Used by wherePlace
 wherePlaceCol :: Col -> (Maybe Int)
 wherePlaceCol (UToken:col) = justAdd (wherePlaceCol col) 1
 wherePlaceCol _            = Nothing
@@ -30,6 +35,7 @@ justAdd :: Maybe Int -> Int -> Maybe Int
 justAdd (Just a) b = Just (a+b)
 justAdd Nothing  b = Just   b  
 
+-- Used for winning detection
 gameWinnerExplorer :: Table -> Maybe Token
 gameWinnerExplorer [] = Nothing
 gameWinnerExplorer (l:ls)
