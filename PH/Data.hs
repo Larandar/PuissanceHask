@@ -1,5 +1,6 @@
 module PH.Data ( 
-	Token(..), Table, Col, PileExec,
+	Token(..), Table, Col, Line,
+	PileExec,
 	tableSize, newTable,
 	) where
 {- by Adrien Dudouit-Exposito -}
@@ -14,6 +15,7 @@ instance  Show Token  where
 
 type Table = [  Col  ]
 type Col   = [ Token ]
+type Line  = [ Token ]
 
 type PileExec = [(Int, Token)]
 
