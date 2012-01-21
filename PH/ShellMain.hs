@@ -5,15 +5,19 @@ import Data.List (transpose,replicate)
 
 import PH.Data (Token(..), Table, Col)
 
+import qualified PH.AI   as AI
 import qualified PH.Data as Data
 import qualified PH.Game as PH
 
 --   -_-'  --
 main :: IO ()
 main = do
-	print "Welcome in PuissanceHask a '4 in a Row' implementation in Haskell"
+	putStrLn "Welcome in PuissanceHask a '4 in a Row' implementation in Haskell"
+	putStrLn "Choose a Collum number where to put your first Token"
+	
 
 -- Internals functions
+
 printTable :: Table -> IO()
 printTable = putStr . showTable
 
