@@ -5,7 +5,6 @@ import Data.Maybe
 
 import PH.Data
 
-import qualified PH.AI    as AI
 import qualified PH.Rules as Rules
 
 placeToken :: Table -> Int -> Token -> Table
