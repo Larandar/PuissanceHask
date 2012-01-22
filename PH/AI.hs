@@ -1,7 +1,13 @@
 module PH.AI ( choosePlace ) where
 {- by Adrien Dudouit-Exposito -}
 
-import PH.Data (Token(..), Table, Col)
+import Data.Maybe
+import Data.List ( sortBy )
+
+import PH.Data (Token(..), Table, Col, tableSize)
+import PH.Game ( placeToken )
+
+import PH.Rules
 
 -- This function is a rename of the desired AI Style
 choosePlace :: Table -> Token -> Maybe Int
