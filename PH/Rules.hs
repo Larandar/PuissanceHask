@@ -1,4 +1,4 @@
-module PH.Rules ( wherePlace, gameWinner, isWinned, isFullTable ) where
+module PH.Rules ( wherePlace, gameWinner, isWinned, isFullTable, isFreeCol ) where
 {- by Adrien Dudouit-Exposito -}
 
 import Data.Maybe
