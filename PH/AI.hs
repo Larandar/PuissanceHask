@@ -31,9 +31,12 @@ chooseBest ls = (\(a,_) -> a) . head . (sortBy (\(_,x) (_,y) -> compare y x)) $ 
 -- fillAllCollum : place in the first free collum
 fillAllCollum :: Table -> Token -> Maybe Int
 fillAllCollum ((UToken:_):_) _ = Just 1
-fillAllCollum (_:table)      t = fillAllCollum table t
-fillAllCollum [] _ = Nothing
+fillAllCollum (_:table)      t = justInc (fillAllCollum table t)
+fillAllCollum []             _ = Nothing
 
+justInc :: Maybe Int -> Maybe Int
+justInc (Just a) = Just (a+1)
+justInc Nothing  = Nothing
 
 -- fillLineFirst : fill in line the table
 fillAllLine :: Table -> Token -> Maybe Int
