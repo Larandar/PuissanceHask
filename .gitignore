@@ -1,6 +1,7 @@
 # Mac OS files
 .DS_Store
 .tm_properties
+Benchmark.hs
 
 # Building Junk
 *.o
