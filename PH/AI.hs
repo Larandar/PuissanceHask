@@ -1,4 +1,4 @@
-module PH.AI ( choosePlace, chooseBest ) where
+module PH.AI ( choosePlace ) where
 {- by Adrien Dudouit-Exposito -}
 
 import Data.Maybe
@@ -12,7 +12,7 @@ import PH.Rules
 
 -- This function is a rename of the desired AI Style
 choosePlace :: Table -> Token -> Maybe Int
-choosePlace = fillAllCollum
+choosePlace = minMaxChoose 2
 
 -- AI Type
 -- - fillAllCollum : place in the first free collum
@@ -24,10 +24,51 @@ choosePlace = fillAllCollum
 -- first element collum, second the value
 chooseBest :: [(Maybe Int,Int)] -> Maybe Int
 chooseBest [] = Nothing
-chooseBest ls = (\(a,_) -> a) . head . (sortBy (\(_,x) (_,y) -> compare y x)) $ ls
+chooseBest ls = (\(a,_) -> a) . bestCoin $ ls
 
+bestCoin :: Ord b => [(a,b)] -> (a,b)
+bestCoin = head . (sortBy (\(_,x) (_,y) -> compare y x))
+
+worstCoin :: Ord b => [(a,b)] -> (a,b)
+worstCoin = head . (sortBy (\(_,x) (_,y) -> compare x y))
 
 -- minMaxChoose : A min max algorithm that choose the estimate good place
+-- - Performance :: Difficulty [(1,< 1 second),(2,+- 3s),(3,17s),(4,2m03s)]
+minMaxChoose :: Int -> Table -> Token -> Maybe Int
+minMaxChoose difficulty table token 
+	| isFullTable table = Nothing
+	| otherwise = chooseBest $ map ( computeMMTree token ) ( constructMMTree difficulty table token )
+
+data MMTree = MMNode (Int, Token) Int [MMTree] | MMLeaf (Int, Token) Int deriving (Show)
+
+constructMMTree :: Int -> Table -> Token -> [MMTree]
+constructMMTree diff table token = map (nextMMTree diff table token) (map (\x -> (x,token)) [1..tableSize])
+
+nextMMTree :: Int -> Table -> Token -> (Int,Token) -> MMTree
+nextMMTree diff table token (p,t)
+	| not (isFreeCol table p) = MMLeaf (p,t) 0
+	| sameToken win ( Just token ) = MMLeaf (p,t) winVal
+	| isJust win                   = MMLeaf (p,t) looVal
+	| diff == 0                    = MMLeaf (p,t) blankVal
+	| otherwise = MMNode (p,t) blankVal ( constructMMTree (diff-1) next token )
+	where
+		next = placeToken table p t
+		win = gameWinner next
+		winVal = 100
+		looVal = (-100)
+		blankVal = (-10)
+
+sameToken :: Maybe Token -> Maybe Token -> Bool
+sameToken (Just a) (Just b) = a == b
+sameToken _ _ = False
+
+computeMMTree :: Token -> MMTree -> (Maybe Int,Int)
+computeMMTree token (MMNode (a, t) v c)
+	 | token == t = (\(_,x) -> (Just a, v+x)) . bestCoin $ map ( computeMMTree token ) c
+	 | otherwise  = (\(_,x) -> (Just a, v+x)) . worstCoin $ map ( computeMMTree token ) c
+computeMMTree _ (MMLeaf (a, _) v) = (Just a, v)
+
+
 
 -- fillAllCollum : place in the first free collum
 fillAllCollum :: Table -> Token -> Maybe Int
