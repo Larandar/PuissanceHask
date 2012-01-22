@@ -9,11 +9,17 @@ import PH.Game ( placeToken )
 
 import PH.Rules
 
+
 -- This function is a rename of the desired AI Style
 choosePlace :: Table -> Token -> Maybe Int
 choosePlace = fillAllCollum
 
--- AI Type 
+-- AI Type
+-- - fillAllCollum : place in the first free collum
+-- - fillLineFirst : fill in line the table
+-- - minMaxChoose : A min max algorithm that choose the estimate good place
+
+
 -- choosing function
 -- first element collum, second the value
 chooseBest :: [(Maybe Int,Int)] -> Maybe Int
