@@ -35,5 +35,15 @@ fillAllCollum (_:table)      t = fillAllCollum table t
 fillAllCollum [] _ = Nothing
 
 
+-- fillLineFirst : fill in line the table
+fillAllLine :: Table -> Token -> Maybe Int
 
+fillAllLine' :: Table -> Token -> Int -> [(Maybe Int,Int)]
+fillAllLine'  []    _ _ = []
+fillAllLine' (c:cs) t n = (Just n,countUToken c):(fillAllLine' cs t (n+1))
+
+countUToken :: Col -> Int
+countUToken  []    = 0
+countUToken (UToken:cs) = 1 + countUToken cs
+countUToken (_:cs) = countUToken cs
 
