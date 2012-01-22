@@ -1,4 +1,4 @@
-module PH.AI ( choosePlace ) where
+module PH.AI ( choosePlace, chooseBest ) where
 {- by Adrien Dudouit-Exposito -}
 
 import Data.Maybe
@@ -27,6 +27,7 @@ chooseBest [] = Nothing
 chooseBest ls = (\(a,_) -> a) . head . (sortBy (\(_,x) (_,y) -> compare y x)) $ ls
 
 
+-- minMaxChoose : A min max algorithm that choose the estimate good place
 
 -- fillAllCollum : place in the first free collum
 fillAllCollum :: Table -> Token -> Maybe Int
@@ -40,6 +41,7 @@ justInc Nothing  = Nothing
 
 -- fillLineFirst : fill in line the table
 fillAllLine :: Table -> Token -> Maybe Int
+fillAllLine table t = chooseBest $ fillAllLine' table t 1
 
 fillAllLine' :: Table -> Token -> Int -> [(Maybe Int,Int)]
 fillAllLine'  []    _ _ = []
