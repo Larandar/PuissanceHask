@@ -14,10 +14,12 @@ choosePlace :: Table -> Token -> Maybe Int
 choosePlace = fillAllCollum
 
 -- AI Type 
+-- choosing function
+-- first element collum, second the value
+chooseBest :: [(Maybe Int,Int)] -> Maybe Int
+chooseBest [] = Nothing
+chooseBest ls = (\(a,_) -> a) . head . (sortBy (\(_,x) (_,y) -> compare y x)) $ ls
 
--- Random
-randomOne :: [Int] -> Int
-randomOne = head
 
 
 -- fillAllCollum : place in the first free collum
@@ -28,8 +30,4 @@ fillAllCollum [] _ = Nothing
 
 
 
--- choosing function
--- TODO Implement the choosing function in a list of value with weight (bigger is the weight bette is the play) if all values are the same choose a random of there
-chooseBest :: [(Int,Float)] -> Int
-chooseBest _ = 1
 
