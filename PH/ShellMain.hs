@@ -16,16 +16,13 @@ main = do
 	putStrLn "Welcome in PuissanceHask a '4 in a Row' implementation in Haskell"
 	rules
 	getRep  (Data.newTable)
-	
-	
-	
 
 -- Internals functions
 rules = do
 	putStrLn "4-in-a-row is a classic turn-based board game.\n\
 	\Drop pieces in the playfield to get 4 lined up in a row, \n\
 	\either horizontally, vertically or diagonally."
-	
+
 getInt :: IO Int
 getInt = readLn
 
@@ -38,7 +35,7 @@ getRep table = do
 		else do
 			putStrLn "bad number"
 			getRep table
-	
+
 gameSelect table nbr = do
 	if Rules.isFreeCol table nbr then
 		haveWin (PH.placeToken table nbr XToken) XToken
@@ -46,21 +43,20 @@ gameSelect table nbr = do
 		(putStrLn "column full")
 		(printTable table)
 		(getRep table)
-					
-						
+
 haveWin table tok 
 	|tok == XToken &&(Rules.isWinned table) =do
-												putStrLn "congrats You have won !"
-												printTable table
-												newOrQuit
+		putStrLn "congrats You have won !"
+		printTable table
+		newOrQuit
 	|tok == OToken &&(Rules.isWinned table) =do 
-												putStrLn "You loose !"
-												printTable table
-												newOrQuit
+		putStrLn "You loose !"
+		printTable table
+		newOrQuit
 	|(Rules.isFullTable table)=do 
-								putStrLn "No winner this time"
-								printTable table
-								newOrQuit
+		putStrLn "No winner this time"
+		printTable table
+		newOrQuit
 	|tok == OToken = getRep table
 	|tok == XToken = haveWin (PH.placeToken table (fromJust(AI.choosePlace table OToken)) OToken) OToken
 	
