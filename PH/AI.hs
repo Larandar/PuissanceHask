@@ -47,10 +47,10 @@ constructMMTree diff table token = map (nextMMTree diff table token) (map (\x ->
 nextMMTree :: Int -> Table -> Token -> (Int,Token) -> MMTree
 nextMMTree diff table token (p,t)
 	| not (isFreeCol table p) = MMLeaf (p,t) 0
-	| sameToken win ( Just token ) = MMLeaf (p,t) winVal
-	| isJust win                   = MMLeaf (p,t) looVal
+	| isJust win && win == ( Just token ) = MMLeaf (p,t) winVal
+	| isJust win && win /= ( Just token)  = MMLeaf (p,t) looVal
 	| diff == 0                    = MMLeaf (p,t) blankVal
-	| otherwise = MMNode (p,t) blankVal ( constructMMTree (diff-1) next token )
+	| isNothing win                = MMNode (p,t) blankVal ( constructMMTree (diff-1) next token )
 	where
 		next = placeToken table p t
 		win = gameWinner next
