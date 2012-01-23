@@ -1,6 +1,5 @@
 module PH.ShellMain where
 {- by Adrien Dudouit-Exposito -}
-{- and Alexandre Legoupil -}
 
 import Data.List (transpose,replicate)
 
@@ -34,8 +33,11 @@ getRep table = do
 	printTable table
 	putStrLn "Choose a Collum number where to put your Token"
 	rep <- getInt
-	gameSelect  table rep 
-
+	if rep > 0 && rep <= Data.tableSize 
+		then gameSelect  table rep 
+		else do
+			putStrLn "bad number"
+			getRep table
 	
 gameSelect table nbr = do
 	if Rules.isFreeCol table nbr then
@@ -49,12 +51,15 @@ gameSelect table nbr = do
 haveWin table tok 
 	|tok == XToken &&(Rules.isWinned table) =do
 												putStrLn "congrats You have won !"
+												printTable table
 												newOrQuit
 	|tok == OToken &&(Rules.isWinned table) =do 
 												putStrLn "You loose !"
+												printTable table
 												newOrQuit
 	|(Rules.isFullTable table)=do 
 								putStrLn "No winner this time"
+								printTable table
 								newOrQuit
 	|tok == OToken = getRep table
 	|tok == XToken = haveWin (PH.placeToken table (fromJust(AI.choosePlace table OToken)) OToken) OToken
