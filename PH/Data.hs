@@ -19,7 +19,7 @@ type Line  = [ Token ]
 
 type PileExec = [(Int, Token)]
 
-tableSize = 8
+tableSize = 7
 
 newTable :: Table
 newTable = newTable' tableSize
