@@ -58,7 +58,8 @@ haveWin table tok
 		printTable table
 		newOrQuit
 	|tok == OToken = getRep table
-	|tok == XToken = haveWin (PH.placeToken table (fromJust(AI.choosePlace table OToken)) OToken) OToken
+	|tok == XToken = do
+		haveWin (PH.placeToken table (fromJust(AI.choosePlace table OToken)) OToken) OToken
 	
 newOrQuit = do
 	putStrLn "A next one ? [Y/N]"

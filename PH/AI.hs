@@ -1,8 +1,9 @@
-module PH.AI ( choosePlace ) where
+module PH.AI where
+	--( choosePlace ) 
 {- by Adrien Dudouit-Exposito -}
 
 import Data.Maybe
-import Data.List ( sortBy )
+import Data.List ( maximumBy, minimumBy )
 
 import PH.Data (Token(..), Table, Col, tableSize)
 import PH.Game ( placeToken )
@@ -27,10 +28,10 @@ chooseBest [] = Nothing
 chooseBest ls = (\(a,_) -> a) . bestCoin $ ls
 
 bestCoin :: Ord b => [(a,b)] -> (a,b)
-bestCoin = head . (sortBy (\(_,x) (_,y) -> compare y x))
+bestCoin  = maximumBy (\(_,x) (_,y) -> compare x y)
 
 worstCoin :: Ord b => [(a,b)] -> (a,b)
-worstCoin = head . (sortBy (\(_,x) (_,y) -> compare x y))
+worstCoin = minimumBy (\(_,x) (_,y) -> compare x y)
 
 -- minMaxChoose : A min max algorithm that choose the estimate good place
 -- - Performance :: Difficulty [(1,< 1 second),(2,+- 3s),(3,17s),(4,2m03s)]
@@ -42,21 +43,27 @@ minMaxChoose difficulty table token
 data MMTree = MMNode (Int, Token) Int [MMTree] | MMLeaf (Int, Token) Int deriving (Show)
 
 constructMMTree :: Int -> Table -> Token -> [MMTree]
-constructMMTree diff table token = map (nextMMTree diff table token) (map (\x -> (x,token)) [1..tableSize])
+constructMMTree diff table token = map (nextMMTree diff table token') (map (\x -> (x,token)) [1..tableSize])
+	where token' = if token == XToken
+		then OToken
+		else XToken
 
 nextMMTree :: Int -> Table -> Token -> (Int,Token) -> MMTree
 nextMMTree diff table token (p,t)
-	| not (isFreeCol table p) = MMLeaf (p,t) 0
-	| isJust win && win == ( Just token ) = MMLeaf (p,t) winVal
-	| isJust win && win /= ( Just token)  = MMLeaf (p,t) looVal
+	| not (isFreeCol table p) = MMLeaf (p,t) (-100)
+	| isJust win && win /= (Just token) = MMLeaf (p,t) looVal
+	| isJust win && win == (Just token) = MMLeaf (p,t) winVal
 	| diff == 0                    = MMLeaf (p,t) blankVal
 	| isNothing win                = MMNode (p,t) blankVal ( constructMMTree (diff-1) next token )
 	where
-		next = placeToken table p t
+		next = placeToken table p t'
 		win = gameWinner next
 		winVal = 100
 		looVal = (-100)
 		blankVal = (-10)
+		t' =  if t == XToken
+			then OToken
+			else XToken
 
 sameToken :: Maybe Token -> Maybe Token -> Bool
 sameToken (Just a) (Just b) = a == b
